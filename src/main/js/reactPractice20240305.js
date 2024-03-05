@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import {useState} from "react";
+import React from "react";
 
 function App() {
 
@@ -13,7 +14,9 @@ function App() {
     let [string, setString] = useState(['남자 헤어 추천', '여자 헤어 추천', '자유 헤어 추천'])
 
     let [count, setCount] = useState(0)
+    let [modalIndex, setModalIndex] = useState(0)
 
+    let [inputValue, setInputValue] = useState("")
 
     /* State의 set은 batching이 일어나기 떄문에 연속적으로 set할 경우 함수형 */
     function letsTest() {
@@ -78,36 +81,68 @@ function App() {
         setModal(!modal)
     }
 
+    // function openModal(index) {
+    //     if (modal && modalTitle === string[index]) {
+    //         setModal(false);
+    //     } else {
+    //         setModal(true);
+    //         setModalTitle(string[index]);
+    //     }
+    // }
+
     function openModal(index) {
-        if (modal && modalTitle === string[index]) {
+        if (modal && modalIndex === index) {
             setModal(false);
         } else {
             setModal(true);
-            setModalTitle(string[index]);
+            setModalIndex(index);
         }
     }
 
-
-    let [modalTitle, setModalTitle] = useState("")
-
-    function Modal() {
-        let [day, setDay] = useState(Math.floor(Math.random() * 10))
-
-        function changeDay() {
-            setDay(Math.floor(Math.random() * 10))
-        }
-
-        return (
-            <>
-                <button onClick={() => changeDay()}>버튼</button>
-                <div className="modal">
-                    <h4>제목 : {modalTitle}</h4>
-                    <p>{day}</p>
-                    <p>상세 내용</p>
-                </div>
-            </>
-        )
+    function updateString(index, newString) {
+        let copy = [...string];
+        copy[index] = newString;
+        setString(copy);
     }
+
+    function addString(input) {
+        let copy = [...string];
+        copy.push(input)
+        setString(copy)
+    }
+
+    function addLike(initial = 0) {
+        let copy = [...like]
+        copy.push(initial)
+        setLike(copy)
+    }
+
+    function addPost(input) {
+        addString(input)
+        addLike()
+    }
+
+    // let [modalTitle, setModalTitle] = useState("")
+    //
+    // function Modal() {
+    //     let [day, setDay] = useState(Math.floor(Math.random() * 10))
+    //
+    //     function changeDay() {
+    //         setDay(Math.floor(Math.random() * 10))
+    //     }
+    //
+    //     return (
+    //         <>
+    //             <button onClick={() => changeDay()}>버튼</button>
+    //             <div className="modal">
+    //                 <h4>제목 : {modalTitle}</h4>
+    //                 <p>{day}</p>
+    //                 <p>상세 내용</p>
+    //             </div>
+    //         </>
+    //     )
+    // }
+
 
     return (
         <div className="App">
@@ -131,12 +166,44 @@ function App() {
             <div>
                 {list()}
             </div>
-            {modal === true ? <Modal/> : null}
+            {/*{modal === true ? <Modal/>  : null}*/}
+            {modal === true ?
+                <Modal string={string[modalIndex]} modalIndex={modalIndex} updateString={updateString}/> : null}
+
             <p>{((Math.floor(Math.random() * 10))) % 12}월 {(Math.floor(Math.random() * 10))}일 발행</p>
             <Random></Random>
             <Rerendor></Rerendor>
+
+            <input type="text" onChange={(e) => {
+                setInputValue(e.target.value)
+            }}/>
+            <button onClick={() => {
+                addPost(inputValue)
+            }}>발행
+            </button>
+
         </div>
     );
+}
+
+function Modal(props) {
+    let [day, setDay] = useState(Math.floor(Math.random() * 10))
+
+    function changeDay() {
+        setDay(Math.floor(Math.random() * 10))
+    }
+
+    return (
+        <>
+            <button onClick={() => changeDay()}>버튼</button>
+            <div className="modal">
+                <h4>제목 : {props.string}</h4>
+                <p>{day}</p>
+                <p>상세 내용</p>
+                <button onClick={() => props.updateString(props.modalIndex, "검열됨")}>검열</button>
+            </div>
+        </>
+    )
 }
 
 function Random() {
@@ -154,6 +221,22 @@ function Rerendor() {
         }}>click
         </button>
     </>
+}
+
+class modal2 extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            name: 'Lee',
+            age: 20
+        }
+    }
+
+    render() {
+        return (
+            <div>hello class {this.props.params}</div>
+        )
+    }
 }
 
 export default App;
