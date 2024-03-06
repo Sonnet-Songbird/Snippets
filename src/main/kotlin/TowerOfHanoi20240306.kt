@@ -1,11 +1,11 @@
 import java.util.Stack
 
+// !!마지막에 left, center가 비어있고 right에 모든 값이 옮겨가면 left == center는 true가 되기 때문에
+// stackOrdinal으로 steps를 기록하는 방법은 마지막 step에 오류가 생긴다.
 fun main() {
-    val tower = Tower(2)
+    val tower = Tower(4)
     tower.solveHanoi()
-    tower.getSteps().forEach { step ->
-        println("[${step[0]}, ${step[1]}]")
-    }
+    println(tower.getSteps().size)
 }
 
 class Tower(private val num: Int) {
@@ -26,10 +26,10 @@ class Tower(private val num: Int) {
     }
 
     fun solveHanoi() {
-        dfs(num, left, right, center)
+        dfs(num, 1, 3, 2)
     }
 
-    private fun dfs(num: Int, start: Stack<Int>, end: Stack<Int>, relay: Stack<Int>) {
+    private fun dfs(num: Int, start: Int, end: Int, relay: Int) {
         if (num == 1) {
             moveDisk(start, end)
         } else {
@@ -40,27 +40,44 @@ class Tower(private val num: Int) {
     }
 
 
-    private fun moveDisk(source: Stack<Int>, target: Stack<Int>) {
-        val disk = source.pop()
-        target.push(disk)
-        snapshot(source, target)
-        println("Move disk from ${stackOrdinal(source)} to ${stackOrdinal(target)}")
+    private fun moveDisk(source: Int, target: Int) {
+        if (stackOf(source).isNotEmpty()) {
+            val disk = stackOf(source).pop()
+            stackOf(target).push(disk)
+            snapshot(source, target)
+            println("Move disk from ${source} to ${target}")
+            printTowerState()
+            println("left == center : ${left == center}")
+        }
     }
 
-    private fun snapshot(source: Stack<Int>, target: Stack<Int>) {
-        steps.add(intArrayOf(stackOrdinal(source), stackOrdinal(target)))
+    private fun printTowerState() {
+        println("Left: $left, Center: $center, Right: $right")
     }
 
-    private fun stackOrdinal(stack: Stack<Int>): Int {
-        return when (stack) {
-            left -> 1
-            center -> 2
-            right -> 3
+    private fun snapshot(source: Int, target: Int) {
+        steps.add(intArrayOf(source, target))
+    }
+
+    private fun stackOf(number: Int): Stack<Int> {
+        return when (number) {
+            1 -> left
+            2 -> center
+            3 -> right
             else -> throw IllegalArgumentException()
         }
     }
+//    private fun stackOrdinal(stack: Stack<Int>): Int {
+//        return when (stack) {
+//            left -> 1
+//            center -> 2
+//            right -> 3
+//            else -> throw IllegalArgumentException()
+//        }
+//    }
 }
 
 
 // Answer : 2 =>  [[1,2],[1,3],[1,3]]
 // Correct : 2 => [ [1,2], [1,3], [2,3] ]?
+
