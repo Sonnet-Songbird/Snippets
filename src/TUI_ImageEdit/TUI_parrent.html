@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUI_parrent</title>
+    <script>
+        function openChild() {
+            const dataURI = document.querySelector('#dataInput').value;
+            const tui_ImageEdit = window.open("./TUI_ImageEdit.html", "TUI_ImageEdit", "width=800,height=600");
+
+            tui_ImageEdit.onload = function () {
+                console.log("data to child:", dataURI);
+                tui_ImageEdit.postMessage(dataURI, window.location.origin);
+                displayImage('before', dataURI);
+            };
+
+            function receiveMessage(event) {
+                if (event.origin !== window.location.origin) return;
+                console.log("data from child:", event.data);
+                document.querySelector('#output').value = event.data;
+                displayImage('after', event.data);
+
+            }
+            window.addEventListener("message", receiveMessage, false);
+        }
+        function displayImage(targetId, dataURI) {
+            const targetDiv = document.getElementById(targetId);
+            const img = document.createElement('img');
+            img.src = dataURI;
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '100%';
+            targetDiv.innerHTML = '';
+            targetDiv.appendChild(img);
+        }
+    </script>
+</head>
+<body>
+    <label for="dataInput">input</label>
+    <input type="text" id="dataInput"
+           value="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOIAAADiCAIAAADccoyAAAAACXBIWXMAAA7EAAAOxAGVKw4bAAABtUlEQVR4nO3dsQ1CQQwFwTOi/5aPkORLiACOFTMVvGDl1GsBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwJrTA37X3vv0hI+baQRwOz0AXpMpATIlQKYEyJQAmRIgUwJkSoBMCZApATIlQKYEyJQAmRIgUwJkSoBMCZApATIlQKYEyJQAmRIgUwJkSoBMCZApATIlQKYE3E8PeMM//GzgkmtKgEwJkCkBMiVApgTIlACZEiBTAmRKgEwJkCkBMiVApgTIlACZEiBTAmRKgEwJkCkBMiVApgTIlACZEiBTAmRKgEwJkCkBMiVApgTM6QE8ff9Vy0wjANeUAJkSIFMCZEqATAmQKQEyJUCmBMiUAJkSIFMCZEqATAmQKQEyJUCmBMiUAJkSIFMCZEqATAmQKQEyJUCmBMiUAJkSIFMCZEqATAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABYaz0AnlAJ4IyLFvYAAAAASUVORK5CYII="/>
+    <button onclick="openChild()">open</button>
+    <br/>
+    <label for="output">output</label>
+    <input type="text" id="output"></input>
+    <div style="display: flex">
+        <div id="before"></div>
+        <div id="after"></div>
+    </div>
+</body>
+</html>
