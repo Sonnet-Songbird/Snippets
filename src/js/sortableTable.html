@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sortable Table Test</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sortable Table Test</h1>
+    <table id="testTable">
+        <thead>
+            <tr>
+                <th>Header 1</th>
+                <th>Header 2</th>
+                <th>Header 3</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>6</td>
+                <td>1</td>
+                <td>8</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>7</td>
+                <td>3</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>4</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>2</td>
+                <td>9</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>6</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>5</td>
+                <td>8</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>9</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>8</td>
+                <td>6</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>3</td>
+                <td>7</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>10</td>
+                <td>10</td>
+            </tr>
+        </tbody>
+    </table>
+    <button id="sortCol1">Sort by Column 1</button>
+    <button id="sortCol2">Sort by Column 2</button>
+    <button id="sortCol3">Sort by Column 3</button>
+    <button id="reverseSortCol1">Reverse Sort by Column 1</button>
+    <button id="reverseSortCol2">Reverse Sort by Column 2</button>
+    <button id="reverseSortCol3">Reverse Sort by Column 3</button>
+    <button id="addRow">Add Row</button>
+    <button id="updateHeader">Update Header</button>
+    <button id="addHeader">Add Header</button>
+    <button id="swapColumns">Swap Columns</button>
+    <button id="reset">reset sort</button>
+
+    <script type="module">
+        import {sortableTable} from "./sortableTable.js";
+
+
+        //example compareFn
+        function compare(a, b) {
+            return parseInt(a.value, 10) >= parseInt(b.value, 10) ? 1 : -1;
+        }
+
+        function reverseCompare(a, b) {
+            return parseInt(a.value, 10) <= parseInt(b.value, 10) ? 1 : -1;
+        }
+
+        const table = new sortableTable('#testTable');
+
+        document.getElementById('sortCol1').addEventListener('click', () => table.sort(0));
+        document.getElementById('sortCol2').addEventListener('click', () => table.sort(1));
+        document.getElementById('sortCol3').addEventListener('click', () => table.sort(2));
+
+        document.getElementById('reverseSortCol1').addEventListener('click', () => table.sort(0, reverseCompare));
+        document.getElementById('reverseSortCol2').addEventListener('click', () => table.sort(1, reverseCompare));
+        document.getElementById('reverseSortCol3').addEventListener('click', () => table.sort(2, reverseCompare));
+
+        document.getElementById('addRow').addEventListener('click', () => {
+            const rowData = [Math.floor(Math.random() * 100), Math.floor(Math.random() * 100), Math.floor(Math.random() * 100)];
+            table.addRow(rowData);
+        });
+
+        document.getElementById('updateHeader').addEventListener('click', () => {
+            const index = prompt('Enter header index to update:');
+            const headerText = prompt('Enter new header text:');
+            table.updateHeader(parseInt(index, 10) - 1, headerText);
+        });
+
+        document.getElementById('addHeader').addEventListener('click', () => {
+            const headers = ['New Header 1', 'New Header 2', 'New Header 3'];
+            table.addHeader(headers);
+        });
+
+        document.getElementById('swapColumns').addEventListener('click', () => {
+            const colIndex1 = prompt('Enter first column index to swap:');
+            const colIndex2 = prompt('Enter second column index to swap:');
+            table.swapColumns(parseInt(colIndex1, 10) - 1, parseInt(colIndex2, 10) - 1);
+        });
+        document.getElementById('reset').addEventListener('click', () => table.resetSort());
+    </script>
+</body>
+</html>
