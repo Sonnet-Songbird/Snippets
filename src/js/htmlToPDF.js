@@ -27,11 +27,32 @@ export async function htmlToPDF(
         });
     }
 
+    function waitForRender() {
+        return new Promise((resolve) => {
+            const observer = new MutationObserver((mutations, obs) => {
+                clearTimeout(renderTimer);
+                renderTimer = setTimeout(() => {
+                    obs.disconnect();
+                    resolve();
+                }, 500);
+            });
+
+            observer.observe(document, { childList: true, subtree: true });
+
+            let renderTimer = setTimeout(() => {
+                observer.disconnect();
+                resolve();
+            }, 500);
+        });
+    }
+
     await loadDependency('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
     await loadDependency('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
 
     const { html2canvas } = window;
     const { jsPDF } = window.jspdf;
+
+    await waitForRender(); // 캡쳐 진행 중 DOM 변화를 감지하여 대기
 
     const content = document.querySelector(contentSelector);
     const wrapperSelector = Array.isArray(wrapperClasses)
@@ -104,7 +125,6 @@ export async function htmlToPDF(
         pdf.addImage(sectionImgData, 'PNG', margin, margin, pdfContentWidth, sectionHeight / ratio);
         position += sectionHeight;
 
-        console.log(progressCallback)
         if (progressCallback) {
             const currentSection = position / (pdfContentHeight * ratio);
             progressCallback(Math.min((currentSection / totalSections) * 100, 100));
@@ -113,4 +133,5 @@ export async function htmlToPDF(
 
     return pdf;
 }
+
 
