@@ -15,7 +15,8 @@ export async function htmlToPDF(
     format = 'a3',
     margin = 20,
     orientation = 'p',
-    progressCallback = null
+    progressCallback = null,
+    isWaitForRender = true
 ) {
     async function loadDependency(url) {
         return new Promise((resolve, reject) => {
@@ -37,7 +38,7 @@ export async function htmlToPDF(
                 }, 500);
             });
 
-            observer.observe(document, { childList: true, subtree: true });
+            observer.observe(document, {childList: true, subtree: true});
 
             let renderTimer = setTimeout(() => {
                 observer.disconnect();
@@ -49,10 +50,10 @@ export async function htmlToPDF(
     await loadDependency('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
     await loadDependency('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
 
-    const { html2canvas } = window;
-    const { jsPDF } = window.jspdf;
+    const {html2canvas} = window;
+    const {jsPDF} = window.jspdf;
 
-    await waitForRender(); // 캡쳐 진행 중 DOM 변화를 감지하여 대기
+    if (isWaitForRender) await waitForRender();
 
     const content = document.querySelector(contentSelector);
     const wrapperSelector = Array.isArray(wrapperClasses)
