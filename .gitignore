@@ -1,13 +1,6 @@
 /out
-/.idea/workspace.xml
-/.idea/kotlinc.xml
-/.idea/libraries/KotlinJavaRuntime.xml
-/.idea/misc.xml
-/.idea/modules.xml
-/.idea/Snippets.iml
-/.idea/vcs.xml
-/.idea/.gitignore
-/.idea/codeStyles/codeStyleConfig.xml
-/.idea/codeStyles/Project.xml
-/.idea/jsLibraryMappings.xml
+/.idea/
 /Snippets.iml
+/node_modules/
+/package.json
+/package-lock.json
