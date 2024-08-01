@@ -1,8 +1,8 @@
 <!--
-Iframe modal module that returns a promise
+Iframe modal module that returns a promise HTML version
+for static html customization and styling.
 
-Calling Example
-<script>
+Calling example
     openModal('url.html', '400px', '80%')
         .then(result => {
             handleResult(result);
@@ -12,11 +12,9 @@ Calling Example
             console.error('Error:', error);
             reject(error);
         });
-</script>
 
 
-messaging example
-<script type="text/javascript">
+Messaging example
     let done = false;
 
     function sendResult(a, b, c, d) {
@@ -50,7 +48,6 @@ messaging example
         if (done === true) return;
         reportError('Popup was closed before submitting.');
     });
-</script>
 -->
 
 <style>

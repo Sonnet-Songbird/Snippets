@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-error {
+            background-color: #dc3545;
+        }
+
+        .btn-error:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Popup Content</h1>
+        <p>Click one of the buttons below to send a result or simulate an error.</p>
+        <p>This example created by GPT-4o.</p>
+        <button class="btn" onclick="sendResult('value1', 'value2', 'value3', 'value4')">Send Result</button>
+        <button class="btn btn-error" onclick="reportError('This is a simulated error message.')">Simulate Error
+        </button>
+    </div>
+
+    <script type="text/javascript">
+        function sendResult(a, b, c, d) {
+            if (window.parent) {
+                window.parent.postMessage({
+                    type: 'result',
+                    value: {a: a, b: b, c: c, d: d}
+                }, '*');
+                window.close();
+            } else {
+                alert('Parent window not found.');
+            }
+        }
+
+        function reportError(errorMessage) {
+            if (window.parent) {
+                window.parent.postMessage({
+                    type: 'error',
+                    message: errorMessage
+                }, '*');
+            }
+        }
+
+        window.addEventListener('beforeunload', function () {
+            if (window.opener) {
+                reportError('Popup was closed before submitting.');
+            }
+        });
+    </script>
+</body>
+</html>

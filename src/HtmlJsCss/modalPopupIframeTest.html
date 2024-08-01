@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Example</title>
+</head>
+<body>
+    <button type="button">open</button>
+
+</body>
+<script type="module">
+
+    import {openModal} from "./modalPopupIframe.js";
+    document.querySelector('button').addEventListener('click', open)
+
+    function open(){
+        openModal('./modalPopupIframeTestPopup.html', '400px', '80%')
+            .then(result => {
+                console.log('Modal result:', result);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+</script>
+</html>
