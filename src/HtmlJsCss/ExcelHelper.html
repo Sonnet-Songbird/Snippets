@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ExcelFile Test</title>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <script type="module">
+      import {ExcelFile} from './ExcelHelper.js';
+
+      window.downloadHTMLTable = downloadHTMLTable;
+      window.sortTableByAge = sortTableByAge;
+      window.mergeSpecificCells = mergeSpecificCells;
+      window.mergeSpecificRows = mergeSpecificRows;
+      window.mergeContinuousCellsTest = mergeContinuousCellsTest;
+      window.removeRowsIfTest = removeRowsIfTest;
+      window.getCellAddrTest = getCellAddrTest;
+      window.setCellValueTest = setCellValueTest;
+      window.updateValueTest = updateValueTest;
+      window.removeColumnTest = removeColumnTest;
+      window.truncateEmptyRowsTest = truncateEmptyRowsTest;
+
+      function downloadHTMLTable() {
+          const tableElement = document.getElementById('dataTable');
+          const excelFile = ExcelFile.fromTable(tableElement);
+          excelFile.download('data.xlsx');
+      }
+
+      function sortTableByAge() {
+          const tableElement = document.getElementById('dataTable');
+          const excelFile = ExcelFile.fromTable(tableElement);
+          excelFile.sort((a, b) => a - b, 1);
+          excelFile.download('sorted_by_age.xlsx');
+      }
+
+      function mergeSpecificCells() {
+          const tableElement = document.getElementById('dataTable');
+          const excelFile = ExcelFile.fromTable(tableElement);
+          excelFile.mergeCells(1, 0, 2, 0);
+          excelFile.download('merged_specific_cells.xlsx');
+      }
+
+      function mergeSpecificRows() {
+          const tableElement = document.getElementById('dataTable');
+          const excelFile = ExcelFile.fromTable(tableElement);
+          excelFile.mergeDirectional(1, true);
+          excelFile.download('merged_specific_rows.xlsx');
+      }
+
+      function mergeContinuousCellsTest() {
+          const tableElement = document.getElementById('dataTable');
+          const excelFile = ExcelFile.fromTable(tableElement);
+          excelFile.truncateEmptyRows();
+          excelFile.mergeContinuousCells(1);
+          excelFile.download('merged_continuous_cells.xlsx');
+      }
+
+      function removeRowsIfTest() {
+          const tableElement = document.getElementById('dataTable');
+          const excelFile = ExcelFile.fromTable(tableElement);
+          excelFile.removeRowsIf(value => value === '최민호');
+          excelFile.download('removed_rows_if.xlsx');
+      }
+
+      function getCellAddrTest() {
+          const tableElement = document.getElementById('dataTable');
+          const excelFile = ExcelFile.fromTable(tableElement);
+          const cellAddr = excelFile.getCellAddr('강하늘');
+          alert(`'강하늘'의 셀 주소: ${cellAddr}`);
+      }
+
+      function setCellValueTest() {
+          const tableElement = document.getElementById('dataTable');
+          const excelFile = ExcelFile.fromTable(tableElement);
+          excelFile.setCellValue('A5', '수정된 이름');
+          excelFile.download('set_cell_value.xlsx');
+      }
+
+      function updateValueTest() {
+          const tableElement = document.getElementById('dataTable');
+          const excelFile = ExcelFile.fromTable(tableElement);
+          try {
+              excelFile.setValue('타입', 6, 6);
+              excelFile.download('updated_value.xlsx');
+          } catch (error) {
+              alert(error.message);
+          }
+      }
+
+      function removeColumnTest() {
+          const tableElement = document.getElementById('dataTable');
+          const excelFile = ExcelFile.fromTable(tableElement);
+          excelFile.removeColumn('타입');
+          excelFile.download('removed_column.xlsx');
+      }
+
+      function truncateEmptyRowsTest() {
+          const tableElement = document.getElementById('dataTable');
+          const excelFile = ExcelFile.fromTable(tableElement);
+          excelFile.truncateEmptyRows();
+          excelFile.download('truncated_empty_rows.xlsx');
+      }
+  </script>
+</head>
+<body>
+  <h1>ExcelFile 테스트</h1>
+
+  <h2>테이블 데이터</h2>
+  <table id="dataTable" border="1">
+    <tr>
+      <th>이름</th>
+      <th>나이</th>
+      <th>타입</th>
+    </tr>
+    <tr>
+      <td>최민호</td>
+      <td>35</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>최민호</td>
+      <td>35</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>강하늘</td>
+      <td>27</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>강하늘</td>
+      <td>27</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>이민호</td>
+      <td>35</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>김하늘</td>
+      <td>27</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>홍길동</td>
+      <td>40</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>이영희</td>
+      <td>30</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>박지민</td>
+      <td>25</td>
+      <td>1</td>
+    </tr>
+  </table>
+
+  <button onclick="downloadHTMLTable()">HTML 테이블 다운로드</button>
+  <button onclick="sortTableByAge()">나이 기준으로 정렬 후 다운로드</button>
+  <button onclick="mergeSpecificCells()">특정 셀 머지 후 다운로드</button>
+  <button onclick="mergeSpecificRows()">특정 행 머지 후 다운로드</button>
+  <button onclick="mergeContinuousCellsTest()">연속 셀 머지 후 다운로드</button>
+  <button onclick="removeRowsIfTest()">조건에 따라 행 삭제 후 다운로드</button>
+  <button onclick="getCellAddrTest()">셀 주소 가져오기 테스트</button>
+  <button onclick="setCellValueTest()">주소 셀 값 설정 후 다운로드</button>
+  <button onclick="updateValueTest()">헤더-행으로 값 설정 후 다운로드</button>
+  <button onclick="removeColumnTest()">열 삭제 후 다운로드</button>
+  <button onclick="truncateEmptyRowsTest()">빈 행 삭제 후 다운로드</button>
+</body>
+</html>
