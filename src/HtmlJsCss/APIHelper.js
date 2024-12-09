@@ -9,7 +9,7 @@ function apiCall(url, method = 'GET', body = null, contentType, customHeaders = 
     })
         .then(async (response) => {
             const result = await response.json().catch(() => ({}));
-            if (response.ok) { // 상태 코드가 200-299일 때
+            if (response.ok) {
                 successCallback(result, response.code, response.message);
                 return result
             } else {
@@ -28,7 +28,7 @@ function apiCall(url, method = 'GET', body = null, contentType, customHeaders = 
 }
 
 
-// 함수 호출을 사용하는 방법
+// Using function call
 
 export function getData(url, successCallback, errorCallback, customHeaders, isAlertOnError) {
     return apiCall(url, 'GET', null, 'application/json', customHeaders, successCallback, errorCallback, isAlertOnError);
@@ -49,19 +49,19 @@ export function postJSONForm(url, selector, successCallback, errorCallback, cust
 }
 
 
-// 요청 객체를 사용 하는 방법
+// Using request object
 
 export class APIRequest {
     constructor(url, data = {}, successCallback = () => {}, errorCallback = () => {}, customHeaders = {}, isAlertOnError = true) {
         this.url = url;
         this.data = {};
 
-        if (typeof data === 'object') { // 객체일 경우
+        if (typeof data === 'object') {
             this.data = {...data};
         } else {
             const dataElem = data instanceof HTMLElement ? data : document.querySelector(data);
             if (dataElem) dataElem instanceof HTMLFormElement ? this.setForm(dataElem) : this.setInput(dataElem);
-            else console.error("[APIRequest] 생성자에 유효하지 않음 data 매개변수 : ", data)
+            else console.error("[APIRequest] Invalid data parameter to Constructor : ", data)
         }
 
         this.successCallback = successCallback;
@@ -84,7 +84,7 @@ export class APIRequest {
     setForm(elemOrSelector) {
         const form = elemOrSelector instanceof HTMLElement ? elemOrSelector : document.querySelector(elemOrSelector);
         if (!form || !(form instanceof HTMLFormElement)) {
-            console.error("[APIRequest] Form을 찾을 수 없습니다: ", elemOrSelector);
+            console.error("[APIRequest] No match form from selector: ", elemOrSelector);
             return;
         }
         const formData = new FormData(form);
@@ -94,16 +94,21 @@ export class APIRequest {
         });
     }
 
-    setInput(elemOrSelector, name = null) { // name을 가진 input을 권장하지만, 다른 종류의 element 역시 value 어트리뷰트에 접근할 수 있으면 작동함.
+    setInput(elemOrSelector, name = null) {
+        // An input with a name is recommended, but other types of elements will  also work if the value attribute is accessible.
         const input = elemOrSelector instanceof HTMLElement ? elemOrSelector : document.querySelector(elemOrSelector);
         if (!input) {
-            console.error("[APIRequest] Input을 찾을 수 없습니다: ", elemOrSelector);
+            console.error("[APIRequest] No match input from selector: ", elemOrSelector);
             return;
         }
         name = name || input.name || input.id;
         const value = input.value || input.innerText;
-        if (!name || !value) {
-            console.error("[APIRequest] 이름 혹은 값을 찾을 수 없습니다. : ", input);
+        if (!name) {
+            console.error("[APIRequest] No name in : ", input);
+            return;
+        }
+        if (!value) {
+            console.error("[APIRequest] No value in : ", input);
             return;
         }
         this.setData(name, value);

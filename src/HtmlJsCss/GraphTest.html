@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Graph</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="graph" width="600" height="400"></canvas>
+  <script>
+      const canvas = document.getElementById('graph');
+      const ctx = canvas.getContext('2d');
+
+      const width = canvas.width;
+      const height = canvas.height;
+      const margin = 40; 
+
+      function equation(a, b) {
+          return (a.row === b.row)
+              ? (b.tier - a.tier)
+              : ((Math.sign(Math.sin(Math.PI * (a.row - 1))) * (b.row - a.row)) || (b.row - a.row));
+      }
+
+      function drawGraph() {
+          ctx.clearRect(0, 0, width, height);
+
+          ctx.beginPath();
+          ctx.moveTo(margin, height - margin);
+          ctx.lineTo(width - margin, height - margin);
+          ctx.moveTo(margin, margin);
+          ctx.lineTo(margin, height - margin);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.strokeStyle = 'blue';
+          ctx.lineWidth = 2;
+
+          const xScale = (width - 2 * margin) / 100;
+          const yScale = (height - 2 * margin) / 100; 
+
+          let prevX = margin;
+          let prevY = height - margin;
+
+          for (let x = 0; x <= 100; x++) {
+              let a = { row: x, tier: 0 };
+              let b = { row: x, tier: 0 };
+              let y = equation(a, b);
+
+              let graphX = margin + x * xScale;
+              let graphY = height - margin - y * yScale;
+
+              if (x > 0) {
+                  ctx.lineTo(graphX, graphY);
+              } else {
+                  ctx.moveTo(graphX, graphY);
+              }
+          }
+          ctx.stroke();
+      }
+
+      drawGraph();
+
+
+
+  </script>
+</body>
+</html>
